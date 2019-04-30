@@ -294,7 +294,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dim = 28,
     # train_data = np.hstack((X,y))
     # print(train_data.shape)
     #
-    np.random.shuffle(train_data)
+    # np.random.shuffle(train_data)
 
     ## Initializing all the parameters
     f1, f2, f3, f4, f5, w6, w7 = (num_filt1 ,img_depth,f,f), (num_filt2 ,num_filt1,f,f), (num_filt3, num_filt2, f, f), (num_filt4, num_filt3, f, f), (num_filt5, num_filt4, f, f), (128,8), (10, 128)
