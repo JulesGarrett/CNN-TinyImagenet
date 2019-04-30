@@ -2,7 +2,6 @@ import cnn
 import numpy as np
 import skimage.data
 import softmax as sm
-import cifar as c
 import gzip
 from tqdm import tqdm
 import pickle
