@@ -269,23 +269,24 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
 def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dim = 28, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
 
-     # training data
-    # m =500
-    # X = extract_data('train-images-idx3-ubyte.gz', m, img_dim)
-    # y_dash = extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
-    # X-= int(np.mean(X))
-    # X/= int(np.std(X))
-    # print(X.shape, y_dash.shape)
-    # train_data = np.hstack((X,y_dash))
-
-    # np.random.shuffle(train_data)
-    # Get training data
+    # training data
     m =500
-    data = np.load('tiny-imagenet.npz')
-    X = data['train']
-    y = data['labels']
-    y = np.reshape(y, (-1, 1))
-    print(X.shape, y.shape)
+    X = extract_data('train-images-idx3-ubyte.gz', m, img_dim)
+    y_dash = extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
+    X-= int(np.mean(X))
+    X/= int(np.std(X))
+    print(X.shape, y_dash.shape)
+    train_data = np.hstack((X,y_dash))
+    print(train_data.shape)
+
+    np.random.shuffle(train_data)
+    # Get training data
+    # m =500
+    # data = np.load('tiny-imagenet.npz')
+    # X = data['train']
+    # y = data['labels']
+    # # print(X.shape, y.shape)
+    # train_data = np.hstack((X,y))
 
     # y_dash = extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
     # X-= int(np.mean(X))
