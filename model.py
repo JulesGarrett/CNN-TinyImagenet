@@ -5,26 +5,28 @@ import softmax as sm
 import gzip
 from tqdm import tqdm
 import pickle
+import pprint as pp
+import sys
 
 #####
 #copied util functions
-
-def extract_data(filename, num_images, IMAGE_WIDTH):
-    print('Extracting', filename)
-    with gzip.open(filename) as bytestream:
-        bytestream.read(16)
-        buf = bytestream.read(IMAGE_WIDTH * IMAGE_WIDTH * num_images)
-        data = np.frombuffer(buf, dtype=np.uint8).astype(np.float32)
-        data = data.reshape(num_images, IMAGE_WIDTH*IMAGE_WIDTH)
-        return data
-
-def extract_labels(filename, num_images):
-    print('Extracting', filename)
-    with gzip.open(filename) as bytestream:
-        bytestream.read(8)
-        buf = bytestream.read(1 * num_images)
-        labels = np.frombuffer(buf, dtype=np.uint8).astype(np.int64)
-    return labels
+#
+# def extract_data(filename, num_images, IMAGE_WIDTH):
+#     print('Extracting', filename)
+#     with gzip.open(filename) as bytestream:
+#         bytestream.read(16)
+#         buf = bytestream.read(IMAGE_WIDTH * IMAGE_WIDTH * num_images)
+#         data = np.frombuffer(buf, dtype=np.uint8).astype(np.float32)
+#         data = data.reshape(num_images, IMAGE_WIDTH*IMAGE_WIDTH)
+#         return data
+#
+# def extract_labels(filename, num_images):
+#     print('Extracting', filename)
+#     with gzip.open(filename) as bytestream:
+#         bytestream.read(8)
+#         buf = bytestream.read(1 * num_images)
+#         labels = np.frombuffer(buf, dtype=np.uint8).astype(np.int64)
+#     return labels
 
 def initializeFilter(size, scale = 1.0):
     stddev = scale/np.sqrt(np.prod(size))
@@ -178,6 +180,7 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
     for i in range(batch_size):
 
         x = X[i]
+        print("\n\nHERE\n\n",num_classes, int(Y[i]))
         y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1) # convert label to one-hot
 
         # Collect Gradients for training example
@@ -267,34 +270,65 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
     return params, cost
 
-def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dim = 28, img_depth = 1, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
+def train(num_classes = 20, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
 
     # training data
-    m =500
-    X = extract_data('train-images-idx3-ubyte.gz', m, img_dim)
-    y_dash = extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
-    X-= int(np.mean(X))
-    X/= int(np.std(X))
-    print(X.shape, y_dash.shape)
-    train_data = np.hstack((X,y_dash))
-    print(train_data.shape)
-
-    np.random.shuffle(train_data)
-    # Get training data
     # m =500
-    # data = np.load('tiny-imagenet.npz')
-    # X = data['train']
-    # y = data['labels']
-    # # print(X.shape, y.shape)
-    # train_data = np.hstack((X,y))
-
+    # X = extract_data('train-images-idx3-ubyte.gz', m, img_dim)
     # y_dash = extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
     # X-= int(np.mean(X))
-    # X/= int(np.std(X))cnm
-    # train_data = np.hstack((X,y))
+    # X/= int(np.std(X))
+    # print(X.shape, y_dash.shape)
+    # train_data = np.hstack((X,y_dash))
     # print(train_data.shape)
     #
     # np.random.shuffle(train_data)
+    # Get training data
+
+    # Change string IDs to unique consec numbers
+    with open('wnids.txt') as file: #get relevant 200 ids
+        ids = [line.rstrip('\n') for line in file]
+
+    lines = None
+    with open('words.txt') as file:
+        lines = [line.rstrip('\n') for line in file]
+    #pp.pprint(lines)
+    label_dict = {}
+    id_num = 0
+    for line in lines: #map n* id to numbers 0 to 199
+        id = line[0:line.index('\t')]
+        label = line[line.index('\t')+1:]
+        if id not in label_dict and id in ids:
+            id_num += 1
+        label_dict[id] = id_num
+    #pp.pprint(label_dict)
+
+
+    m =500
+    data = np.load('x-tiny-imagenet.npz')
+    X = data['train'].astype(np.float32)
+    pp.pprint(X)
+
+    y = data['labels']
+    for i in range(len(y)):
+        y[i] = label_dict[y[i]]
+    y = y.astype(np.float32)
+    num_images = X.shape[0]
+    img_len = X.shape[1]
+    img_dim = X.shape[-1]
+    print("before:", X.shape, y.shape)
+    X = X.reshape(num_images,img_len*img_len*img_dim)
+    y = y.reshape(num_images,1) # (100000,) -> (100000,1)
+    #train_data = np.hstack((X,y))
+
+    # y_dash = extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
+    X-= int(np.mean(X))
+    X/= int(np.std(X))
+    print("after", X.shape, y.shape)
+    train_data = np.hstack((X,y))
+    # print(train_data.shape)
+
+    np.random.shuffle(train_data)
 
     ## Initializing all the parameters
     f1, f2, f3, f4, f5, w6, w7 = (num_filt1 ,img_depth,f,f), (num_filt2 ,num_filt1,f,f), (num_filt3, num_filt2, f, f), (num_filt4, num_filt3, f, f), (num_filt5, num_filt4, f, f), (128,8), (10, 128)
@@ -326,7 +360,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dim = 28,
 
         t = tqdm(batches)
         for x,batch in enumerate(t):
-            params, cost = grad_descnet(batch, num_classes, lr, img_dim, img_depth, beta1, beta2, params, cost)
+            params, cost = grad_descnet(batch, num_classes, lr, img_dimen, img_depth, beta1, beta2, params, cost)
             t.set_description("Cost: %.2f" % (cost[-1]))
 
 
