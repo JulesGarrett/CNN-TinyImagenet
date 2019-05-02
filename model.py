@@ -181,6 +181,8 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
         x = X[i]
         print("\n\nHERE\n\n",num_classes, int(Y[i]))
+        print(Y.shape)
+        
         y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1) # convert label to one-hot
 
         # Collect Gradients for training example
@@ -270,7 +272,7 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
     return params, cost
 
-def train(num_classes = 20, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
+def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
 
     # training data
     # m =500
@@ -288,6 +290,8 @@ def train(num_classes = 20, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     # Change string IDs to unique consec numbers
     with open('wnids.txt') as file: #get relevant 200 ids
         ids = [line.rstrip('\n') for line in file]
+    ids = ids[0:9]
+    print(ids)
 
     lines = None
     with open('words.txt') as file:
@@ -295,24 +299,33 @@ def train(num_classes = 20, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     #pp.pprint(lines)
     label_dict = {}
     id_num = 0
-    for line in lines: #map n* id to numbers 0 to 199
+    for line in lines: #map n* id to numbers 0 to 9
         id = line[0:line.index('\t')]
         label = line[line.index('\t')+1:]
         if id not in label_dict and id in ids:
             id_num += 1
         label_dict[id] = id_num
     #pp.pprint(label_dict)
-
+    #print(label_dict)
 
     m =500
-    data = np.load('x-tiny-imagenet.npz')
+    data = np.load('extra-tiny-imagenet.npz')
     X = data['train'].astype(np.float32)
-    pp.pprint(X)
-
-    y = data['labels']
+    #pp.pprint(X)
+    y = []
+    temp_y = data['labels']
+    print("temp shape",temp_y.shape)
+    for label in temp_y:
+        if label in ids:
+            y.append(label)
+    #pp.pprint(y)
+    
     for i in range(len(y)):
         y[i] = label_dict[y[i]]
+    y = np.array(y)
+    print(y.shape)
     y = y.astype(np.float32)
+    pp.pprint(y)
     num_images = X.shape[0]
     img_len = X.shape[1]
     img_dim = X.shape[-1]

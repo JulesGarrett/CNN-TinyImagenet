@@ -1,0 +1,6 @@
+unins000.*
+Git LFS
+__pycache__
+*.exe
+*.gz
+tiny-imagenet.npz
