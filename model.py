@@ -180,8 +180,8 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
     for i in range(batch_size):
 
         x = X[i]
-        print("\n\nHERE\n\n",num_classes, int(Y[i]))
-        print(Y.shape)
+#        print("\n\nHERE\n\n",num_classes, int(Y[i]))
+#        print(Y.shape)
         
         y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1) # convert label to one-hot
 
@@ -290,7 +290,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     # Change string IDs to unique consec numbers
     with open('wnids.txt') as file: #get relevant 200 ids
         ids = [line.rstrip('\n') for line in file]
-    ids = ids[0:9]
+    ids = ids[0:10]
     print(ids)
 
     lines = None
@@ -303,8 +303,8 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
         id = line[0:line.index('\t')]
         label = line[line.index('\t')+1:]
         if id not in label_dict and id in ids:
-            id_num += 1
-        label_dict[id] = id_num
+            label_dict[id] = id_num
+            
     #pp.pprint(label_dict)
     #print(label_dict)
 
@@ -318,14 +318,14 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     for label in temp_y:
         if label in ids:
             y.append(label)
-    #pp.pprint(y)
     
     for i in range(len(y)):
         y[i] = label_dict[y[i]]
     y = np.array(y)
     print(y.shape)
     y = y.astype(np.float32)
-    pp.pprint(y)
+ #   for i in range(len(y)):
+ #       print(y[i])
     num_images = X.shape[0]
     img_len = X.shape[1]
     img_dim = X.shape[-1]
@@ -344,7 +344,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     np.random.shuffle(train_data)
 
     ## Initializing all the parameters
-    f1, f2, f3, f4, f5, w6, w7 = (num_filt1 ,img_depth,f,f), (num_filt2 ,num_filt1,f,f), (num_filt3, num_filt2, f, f), (num_filt4, num_filt3, f, f), (num_filt5, num_filt4, f, f), (128,8), (10, 128)
+    f1, f2, f3, f4, f5, w6, w7 = (num_filt1 ,img_depth,f,f), (num_filt2 ,num_filt1,f,f), (num_filt3, num_filt2, f, f), (num_filt4, num_filt3, f, f), (num_filt5, num_filt4, f, f), (128,288), (10, 128)
     f1 = initializeFilter(f1)
     f2 = initializeFilter(f2)
     f3 = initializeFilter(f3)
