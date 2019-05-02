@@ -1,66 +1,59 @@
-import tensorflow as tf
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
+import cv2
 
+'''
+    1. 227 or 224?
+    2. channel first or last?
+'''
 IMAGE_SIZE = 256
-
+CROP_SIZE = 224
+'''
+    @input: any image with size equal to or larger than 256,
+    @return: a list of 2^4 images of the size 224x224
+'''
+#resize the image to 256x256
 def resize_image(img):
-    
-    tf.reset_default_graph()
-    X = tf.placeholder(tf.float32, (None, None, 3))
-    tf_img = tf.image.resize_images(X, (IMAGE_SIZE, IMAGE_SIZE), tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        img = img[:, :, :3]# Do not read alpha channel.
-        resized_img = sess.run(tf_img, feed_dict = {X: img})
+    resized_img = cv2.resize(img, (256, 256))
     return resized_img
 
-
+#flip image
 def flip_image(img):
-    tf.reset_default_graph()
-    X = tf.placeholder(tf.float32, shape = (IMAGE_SIZE, IMAGE_SIZE, 3))
-    tf_img1 = tf.image.flip_left_right(X)
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        flipped_img = sess.run(tf_img1, feed_dict = {X: img})
-    return flipped_img
+    flipped_image = cv2.flip(img, 0)
+    return flipped_image
 
-
+#crop 2^3 images from input image
 def crop_image(img):
-    crop_img = img[0:227, 0:227]
-    return crop_img
+    imgs = []
+    diff = IMAGE_SIZE - CROP_SIZE
+    imgs.append(img[0:CROP_SIZE,0:CROP_SIZE])
+    imgs.append(img[1:CROP_SIZE+1,0:CROP_SIZE ])
+    imgs.append(img[diff:IMAGE_SIZE,0:CROP_SIZE])
+    imgs.append(img[diff-1:IMAGE_SIZE-1,0:CROP_SIZE])
+    imgs.append(img[0:CROP_SIZE,diff-1:IMAGE_SIZE-1])
+    imgs.append(img[0:CROP_SIZE,diff:IMAGE_SIZE])
+    imgs.append(img[diff:IMAGE_SIZE,diff:IMAGE_SIZE])
+    imgs.append(img[diff:IMAGE_SIZE,diff-1:IMAGE_SIZE-1])
+#    for i in imgs:
+#        cv2.imshow('crop{}'.format(i), i)
+#    cv2.waitKey()
+    return imgs
 
 
 def data_aug(imgPath):
-    img = mpimg.imread(imgPath)
-    plt.subplot(221)
-    plt.title("original image")
-    plt.axis('off')
-    plt.imshow(img)
-    
+    img = cv2.imread(imgPath) #image read in BGR
+#    cv2.imshow('original image', img)
+
     resized_img = resize_image(img)
-    plt.subplot(222)
-    plt.title("resized image")
-    plt.imshow(resized_img)
-    plt.axis('off')
-    
+#    cv2.imshow('resized image', resized_img)
+
     flipped_img = flip_image(resized_img)
-    plt.subplot(223)
-    plt.title("flipped image")
-    plt.axis('off')
-    plt.imshow(flipped_img)
-    
+#    cv2.imshow('flipped image', flipped_img)
+
+
     cropped_img = crop_image(resized_img)
-    plt.subplot(224)
-    plt.imshow(cropped_img)
-    plt.axis('off')
-    plt.title("cropped image")
-    plt.show()
-    
-    imgs =[]
-    imgs.append(resized_img)
-    imgs.append(flipped_img)
-    imgs.append(cropped_img)
+    cropped_img2 = crop_image(flipped_img)
+
+    imgs = cropped_img + cropped_img2
+    print len(imgs)
     return imgs
 
 

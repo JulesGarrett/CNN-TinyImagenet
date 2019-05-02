@@ -1,4 +1,6 @@
-train-images-idx3-ubyte.gz
-train-labels-idx1-ubyte.gz
+unins000.*
+Git LFS
+__pycache__
+*.exe
+*.gz
 tiny-imagenet.npz
-x-tiny-imagenet.npz
