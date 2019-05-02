@@ -1,5 +1,6 @@
 import model
 import cnn
+import operator
 import softmax as sm
 import numpy as np
 
@@ -42,16 +43,13 @@ def feed_forward(img, label, params, conv_s, pool_f, pool_s):
 
     probs = sm.softmax(out)
 
-    # loss = cnn.cross_entropy(probs, label)
-
-    return probs
-
 
 def accuracy(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dim = 28, img_depth = 1, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
     # training data
     m =500
     X = model.extract_data('train-images-idx3-ubyte.gz', m, img_dim)
     y_dash = model.extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
+    print(y_dash)
     X-= int(np.mean(X))
     X/= int(np.std(X))
     print(X.shape, y_dash.shape)
@@ -83,13 +81,18 @@ def accuracy(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dim = 
 
     print("LR:"+str(lr)+", Batch Size:"+str(batch_size))
 
-    probs = feed_forward(batch, num_classes, lr, img_dim, img_depth, beta1, beta2, params, cost)
-
+    probs = feed_forward(train_data, num_classes, lr, img_dim, img_depth, beta1, beta2, params, cost)
     print(probs)
+
+    maxProb = max(probs)
+    index, value = max(enumerate(my_list), key=operator.itemgetter(1))
+    print(index)
+
+
+
 
 def main():
     accuracy()
 
 if __name__== "__main__":
   main()
-

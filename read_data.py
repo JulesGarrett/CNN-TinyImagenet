@@ -12,7 +12,7 @@ IMG_SIZE = 64
 
 with open('wnids.txt') as file: #get relevant 200 ids
         ids = [line.rstrip('\n') for line in file]
-ids = ids[0:9]
+ids = ids[0:10]
 
 train_data =[]
 labels = []

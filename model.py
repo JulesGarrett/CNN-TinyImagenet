@@ -182,7 +182,7 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
         x = X[i]
         print("\n\nHERE\n\n",num_classes, int(Y[i]))
         print(Y.shape)
-        
+
         y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1) # convert label to one-hot
 
         # Collect Gradients for training example
@@ -290,7 +290,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     # Change string IDs to unique consec numbers
     with open('wnids.txt') as file: #get relevant 200 ids
         ids = [line.rstrip('\n') for line in file]
-    ids = ids[0:9]
+    ids = ids[0:10]
     print(ids)
 
     lines = None
@@ -319,7 +319,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
         if label in ids:
             y.append(label)
     #pp.pprint(y)
-    
+
     for i in range(len(y)):
         y[i] = label_dict[y[i]]
     y = np.array(y)
