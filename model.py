@@ -291,7 +291,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     with open('wnids.txt') as file: #get relevant 200 ids
         ids = [line.rstrip('\n') for line in file]
     ids = ids[0:10]
-    print(ids)
+    #print(ids)
 
     lines = None
     with open('words.txt') as file:
@@ -304,6 +304,8 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
         label = line[line.index('\t')+1:]
         if id not in label_dict and id in ids:
             label_dict[id] = id_num
+            id_num += 1
+            print(label)
 
     #pp.pprint(label_dict)
     #print(label_dict)
