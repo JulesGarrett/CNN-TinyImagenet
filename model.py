@@ -184,7 +184,6 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 #        print(Y.shape)
 
         y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1) # convert label to one-hot
-
         # Collect Gradients for training example
         grads, loss = make_network(x, y, params, 1, 2, 2)
         [df1_, df2_, df3_, df4_, df5_, dw6_, dw7_, db1_, db2_, db3_, db4_, db5_, db6_, db7_] = grads

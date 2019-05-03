@@ -57,42 +57,37 @@ def feed_forward(img, label, params, conv_s, pool_f, pool_s):
     return probs
 
 
-def intermediate(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
+def calculateAccuracy(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
     X = batch[:,0:-1] # get batch inputs
     X = X.reshape(len(batch), n_c, dim, dim)
     Y = batch[:,-1] # get batch labels
     batch_size = len(batch)
 
-    accurate = []
+    accurate = 0
+
     for i in range(batch_size):
+        print(i)
         x = X[i]
-        # print("x", len(x))
-#        print("\n\nHERE\n\n",num_classes, int(Y[i]))
-#        print(Y.shape)
         y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1) # convert label to one-hot
-        # print("y", len(y))
-        # Collect Gradients for training example
+
+        #Feed forward
         probs = feed_forward(x, y, params, 1, 2, 2)
 
-        # maxProb = max(probs)
         index, value = max(enumerate(probs), key=operator.itemgetter(1))
-        ind, val = max(enumerate(y), key=operator.itemgetter(1))
+        ind = int(Y[i])
 
-        print("THIS", index, y)
+        # print("Comparing", index, " with actual  value ", ind)
         if index == ind:
-            accurate.append(1)
-        else:
-            accurate.append(0)
+            accurate += 1
 
     return accurate
 
 def accuracy(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
     # training data
-    # Change string IDs to unique consec numbers
     with open('wnids.txt') as file: #get relevant 200 ids
         ids = [line.rstrip('\n') for line in file]
     ids = ids[0:10]
-    print(ids)
+    #print(ids)
 
     lines = None
     with open('words.txt') as file:
@@ -105,6 +100,8 @@ def accuracy(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen 
         label = line[line.index('\t')+1:]
         if id not in label_dict and id in ids:
             label_dict[id] = id_num
+            id_num += 1
+            print(label)
 
     #pp.pprint(label_dict)
     #print(label_dict)
@@ -140,6 +137,8 @@ def accuracy(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen 
     X/= int(np.std(X))
     print("after", X.shape, y.shape)
     train_data = np.hstack((X,y))
+    # for i in range(len(train_data)):
+    #     print(train_data[:, -1][i])
     # print(train_data.shape)
 
     np.random.shuffle(train_data)
@@ -166,16 +165,11 @@ def accuracy(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen 
     cost = []
 
     print("LR:"+str(lr)+", Batch Size:"+str(batch_size))
-
-    accurate = intermediate(train_data, num_classes, lr, img_dimen, img_depth, beta1, beta2, params, cost)
+    
+    accurate = calculateAccuracy(train_data, num_classes, lr, img_dimen, img_depth, beta1, beta2, params, cost)
     print(accurate)
-    # print(probs)
-    #
-    # maxProb = max(probs)
-    # index, value = max(enumerate(my_list), key=operator.itemgetter(1))
-    # print(index)
-
-
+    accuracy = accurate/len(train_data) * 100
+    print("Accuracy: ", accuracy, "%")
 
 
 def main():
