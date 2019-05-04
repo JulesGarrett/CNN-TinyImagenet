@@ -35,6 +35,7 @@ The code was written from scratch using Python 3.7(?) and the following modules:
 
 - Numpy
 - cv2
+- tqdm
 - Pickle
 
 
