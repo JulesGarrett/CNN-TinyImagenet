@@ -271,7 +271,7 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
     return params, cost
 
-def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
+def train(num_classes = 10, lr = 0.05, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
 
     # training data
     # m =500
