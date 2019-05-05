@@ -33,10 +33,10 @@ We seek to discover what patterns the model primarily exploits to classify image
 ### Requisites
 The code was written from scratch using Python 3.7(?) and the following modules:
 
-- Numpy
-- Tensorflow
-- OpenCV
-- Pickle
+- numpy
+- pickle
+- tqdm
+- cv2
 
 
 ### References
