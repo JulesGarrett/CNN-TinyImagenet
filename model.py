@@ -7,6 +7,7 @@ from tqdm import tqdm
 import pickle
 import pprint as pp
 import sys
+import data_augmentation as da
 
 #####
 #copied util functions
@@ -271,6 +272,7 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
     return params, cost
 
+DA_FACTOR = 16 #enlarge the size of dataset by factor of DA_FACTOR
 def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
 
     # training data
@@ -312,6 +314,23 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     m =500
     data = np.load('extra-tiny-imagenet.npz')
     X = data['train'].astype(np.float32)
+#    print('type', X[0])
+#    new_X = np.array()) ##16*5000 = 80000
+
+    new_X = np.empty([DA_FACTOR,64,64,3])
+#    print (new_X)
+    for img in X:
+        new_data = da.data_aug(img)
+        print(new_data.shape)
+        print(new_X.shape)
+        new_X = np.concatenate([new_X, new_data])
+    print ('date augmented successfully', new_X.shape)
+    del_indices = range(DA_FACTOR)
+    print('del indices',del_indices)
+    new_X = np.delete(new_X, del_indices, 0)
+    print('newx shape',new_X.shape)
+##todo:check new_x[2] should equal to new_data(X[0])
+    X = new_X
     #pp.pprint(X)
     y = []
     temp_y = data['labels']
@@ -320,11 +339,19 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
         if label in ids:
             y.append(label)
 
+    new_Y = []
     for i in range(len(y)):
         y[i] = label_dict[y[i]]
+        for j in range(DA_FACTOR):
+            new_Y.append(y[i]) ##enlarge the size of y
+
+#    print('y:',y)
+    y = new_Y
     y = np.array(y)
     print(y.shape)
+    
     y = y.astype(np.float32)
+    
  #   for i in range(len(y)):
  #       print(y[i])
     num_images = X.shape[0]
