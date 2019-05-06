@@ -397,18 +397,25 @@ def train(num_classes = 10, lr = 0.07, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     with open(save_path, 'wb') as file:
         pickle.dump(params, file)
 
+    outputCostTime = open("cost_time.txt", "w+")
 
-    for i in range(0, len(costY2D)):
+    for i in range(0, num_epochs):
         x = timeX2D[i]
+        outputCostTime.write("Time:")
+        for t in x:
+            outputCostTime.write(t)
+
+        outputCostTime.write("Cost:")
         y = costY2D[i]
-        colors = (0,0,0)
-        area = np.pi*3
+        for c in y:
+            outputCostTime.write(c)
 
         # Plot
-        plt.scatter(x, y, s=area, c=colors, alpha=0.5)
-        plt.title('Scatter plot pythonspot.com')
-        plt.xlabel('x')
-        plt.ylabel('y')
+        plt.scatter(x, y)
+        plt.plot(x, y)
+        plt.title('Scatter plot')
+        plt.xlabel('Time')
+        plt.ylabel('Cost')
         plt.show()
 
     return cost
