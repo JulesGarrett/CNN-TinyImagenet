@@ -88,7 +88,7 @@ def calculateAccuracy(batch, num_classes, dim, n_c, params, cost):
 
     return accurate
 
-def accuracy(num_classes = 10, img_dimen = 64, img_depth = 3, load_params_path = 'test-lr-1-2.pkl'):
+def accuracy(num_classes = 10, img_dimen = 64, img_depth = 3, load_params_path = 'test-lr-0-5.pkl'):
     #TRAINING DATA
     with open('wnids.txt') as file: #get relevant 200 ids
         ids = [line.rstrip('\n') for line in file]
