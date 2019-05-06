@@ -81,16 +81,16 @@ def calculateAccuracy(batch, num_classes, dim, n_c, params, cost):
         ind = int(Y[i])
 
         #Use this to debug:
-        print("\t\nComparing", index, " with actual  value ", ind,"\n")
+        # print("\t\nComparing", index, " with actual  value ", ind,"\n")
 
         if index == ind:
             accurate += 1
 
     return accurate
 
-def accuracy(load_params_path, num_classes = 10, img_dimen = 64, img_depth = 3):
+def accuracy(num_classes = 10, img_dimen = 64, img_depth = 3, load_params_path = 'test-lr-0-5.pkl'):
     #TRAINING DATA
-    with open('wnids.txt') as file: #get relevant 200 ids
+    with open('wnids.txt') as file: #get relevant 200 idsg
         ids = [line.rstrip('\n') for line in file]
     ids = ids[0:10]
 
@@ -151,7 +151,7 @@ def accuracy(load_params_path, num_classes = 10, img_dimen = 64, img_depth = 3):
 
 
 def main():
-    accuracy('test-lr-0-7.pkl')
+    accuracy()
 
 if __name__== "__main__":
   main()

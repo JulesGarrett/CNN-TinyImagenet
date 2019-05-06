@@ -6,11 +6,12 @@ import classify as cls
 
 import cv2
 #from alexnet import alexnet
+classList=[]
 
 
 images = []
-dogimg = cv2.imread('C:\\Users\\Admin\\Documents\\GitHub\\CNN-TinyImagenet\\Presentation\\image_dog.png')##what's type of image in imagent
-inputimg = cv2.imread('C:\\Users\\Admin\\Documents\\GitHub\\CNN-TinyImagenet\\Presentation\\image_dog.png',0)##what's type of image in imagent
+dogimg = cv2.imread('C:\\Users\\Admin\\Documents\\GitHub\\CNN-TinyImagenet-new\\Presentation\\image_dog.png')##what's type of image in imagent
+inputimg = cv2.imread('C:\\Users\\Admin\\Documents\\GitHub\\CNN-TinyImagenet-new\\Presentation\\image_dog.png',0)##what's type of image in imagent
 
 screen_res =  GetSystemMetrics(0),  GetSystemMetrics(1)
 scale_width = screen_res[0] / dogimg.shape[1]
