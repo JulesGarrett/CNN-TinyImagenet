@@ -1,6 +1,7 @@
 # from model import initializeFilter
 import cnn
 import operator
+import pickle
 import softmax as sm
 import numpy as np
 
