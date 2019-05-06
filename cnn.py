@@ -41,9 +41,9 @@ def conv_back(dconv_prev, conv_in, conv_filter, stride):
         curr_y = out_y = 0
         while curr_y + filt <= orig_dim:
             curr_x = out_x = 0
-            while curr_x +filt <- orig_dim:
+            while curr_x +filt <= orig_dim:
                 dfilt[curr_filt] += dconv_prev[curr_filt, out_y, out_x] * conv_in[:, curr_y:curr_y+filt, curr_x:curr_x+filt]
-                dout[:, curr_y:curr_y+filt, curr_x:curr_x+filt] += dconv_prev[curr_f, out_y, out_x] * conv_filt[curr_f]
+                dout[:, curr_y:curr_y+filt, curr_x:curr_x+filt] += dconv_prev[curr_filt, out_y, out_x] * conv_filter[curr_filt]
                 curr_x += stride
                 out_x += 1
             curr_y +=stride
