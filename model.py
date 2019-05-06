@@ -7,6 +7,9 @@ from tqdm import tqdm
 import pickle
 import pprint as pp
 import sys
+from timeit import default_timer as timer
+import matplotlib.pyplot as plt
+
 
 #####
 #copied util functions
@@ -271,7 +274,7 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
     return params, cost
 
-def train(num_classes = 10, lr = 0.05, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
+def train(num_classes = 10, lr = 0.07, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test-lr-7.pkl'):
 
     # training data
     # m =500
@@ -311,7 +314,7 @@ def train(num_classes = 10, lr = 0.05, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
 
     m =500
     data = np.load('extra-tiny-imagenet.npz')
-    X = data['train'].astype(np.float32)
+    X = data['train'].astype(np.float32)[0:2500]
     #pp.pprint(X)
     y = []
     temp_y = data['labels']
@@ -324,7 +327,7 @@ def train(num_classes = 10, lr = 0.05, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
         y[i] = label_dict[y[i]]
     y = np.array(y)
     print(y.shape)
-    y = y.astype(np.float32)
+    y = y.astype(np.float32)[0:2500]
  #   for i in range(len(y)):
  #       print(y[i])
     num_images = X.shape[0]
@@ -368,18 +371,45 @@ def train(num_classes = 10, lr = 0.05, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
 
     print("LR:"+str(lr)+", Batch Size:"+str(batch_size))
 
+    timeX2D = []
+    costY2D = []
+
     for epoch in range(num_epochs):
         np.random.shuffle(train_data)
         batches = [train_data[k:k + batch_size] for k in range(0, train_data.shape[0], batch_size)]
 
+        start = timer()
+        timeX = []
+        costY = []
+
         t = tqdm(batches)
         for x,batch in enumerate(t):
             params, cost = grad_descnet(batch, num_classes, lr, img_dimen, img_depth, beta1, beta2, params, cost)
+            end = timer()
+            timeX.append(end - start)
+            costY.append(cost[-1])
             t.set_description("Cost: %.2f" % (cost[-1]))
+
+        timeX2D.append(timeX)
+        costY2D.append(costY)
 
 
     with open(save_path, 'wb') as file:
         pickle.dump(params, file)
+
+
+    for i in range(0, len(costY2D)):
+        x = timeX2D[i]
+        y = costY2D[i]
+        colors = (0,0,0)
+        area = np.pi*3
+
+        # Plot
+        plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+        plt.title('Scatter plot pythonspot.com')
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.show()
 
     return cost
 
