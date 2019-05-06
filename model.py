@@ -38,7 +38,7 @@ def initializeWeight(size):
 
 
 def make_network(img, label, params, conv_s, pool_f, pool_s):
-
+    img = img.reshape(3,64,64)
     [f1, f2, f3, f4, f5, w6, w7, b1, b2, b3, b4, b5, b6, b7] = params
 
     #forward operations
@@ -187,6 +187,7 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
         y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1) # convert label to one-hot
         # Collect Gradients for training example
         grads, loss = make_network(x, y, params, 1, 2, 2)
+#        print(grads)
         [df1_, df2_, df3_, df4_, df5_, dw6_, dw7_, db1_, db2_, db3_, db4_, db5_, db6_, db7_] = grads
 
         df1+=df1_
