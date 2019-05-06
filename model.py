@@ -7,6 +7,7 @@ from tqdm import tqdm
 import pickle
 import pprint as pp
 import sys
+from matplotlib import pyplot as plt
 
 #####
 #copied util functions
@@ -271,6 +272,12 @@ def grad_descnet(batch, num_classes, lr, dim, n_c, beta1, beta2, params, cost):
 
     return params, cost
 
+def plot(img):
+    img = img.reshape(64,64,3)
+    fig = plt.figure(figsize=(3,3))
+    ax = fig.add_subplot(111)
+    ax.imshow(img,interpolation='bicubic')
+
 def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 64, img_depth = 3, f = 2, num_filt1 = 8, num_filt2 = 8, num_filt3 = 8, num_filt4 = 8, num_filt5 = 8, batch_size = 32, num_epochs = 1, save_path = 'test.pkl'):
 
     # training data
@@ -304,18 +311,17 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
         if id not in label_dict and id in ids:
             label_dict[id] = id_num
             id_num += 1
-            print(label)
-
-    #pp.pprint(label_dict)
-    #print(label_dict)
+            print("id: %d, label: %s" % (id_num-1,label))
 
     m =500
     data = np.load('extra-tiny-imagenet.npz')
     X = data['train'].astype(np.float32)
+    
+    
     #pp.pprint(X)
     y = []
     temp_y = data['labels']
-    print("temp shape",temp_y.shape)
+    #print("temp shape",temp_y.shape)
     for label in temp_y:
         if label in ids:
             y.append(label)
@@ -323,14 +329,14 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     for i in range(len(y)):
         y[i] = label_dict[y[i]]
     y = np.array(y)
-    print(y.shape)
+    #print(y.shape)
     y = y.astype(np.float32)
  #   for i in range(len(y)):
  #       print(y[i])
     num_images = X.shape[0]
     img_len = X.shape[1]
     img_dim = X.shape[-1]
-    print("before:", X.shape, y.shape)
+    #print("before:", X.shape, y.shape)
     X = X.reshape(num_images,img_len*img_len*img_dim)
     y = y.reshape(num_images,1) # (100000,) -> (100000,1)
     #train_data = np.hstack((X,y))
@@ -338,9 +344,13 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     # y_dash = extract_labels('train-labels-idx1-ubyte.gz', m).reshape(m,1)
     X-= int(np.mean(X))
     X/= int(np.std(X))
-    print("after", X.shape, y.shape)
+    #print("after", X.shape, y.shape)
     train_data = np.hstack((X,y))
     # print(train_data.shape)
+#    i = 1700;
+#    plot(X[i])
+#    print(y[i])
+    #sys.exit()
 
     np.random.shuffle(train_data)
 
