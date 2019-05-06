@@ -160,7 +160,8 @@ def accuracy(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen 
     b6 = np.zeros((w6.shape[0],1))
     b7 = np.zeros((w7.shape[0],1))
 
-    params = [f1, f2, f3, f4, f5, w6, w7, b1, b2, b3, b4, b5, b6, b7]
+#     params = [f1, f2, f3, f4, f5, w6, w7, b1, b2, b3, b4, b5, b6, b7]
+    params = pickle.load(open(save_path, 'rb')) #Obtaining parameters from model.py 's output
 
     cost = []
 
