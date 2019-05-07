@@ -151,7 +151,7 @@ def accuracy(num_classes = 10, img_dimen = 64, img_depth = 3, load_params_path =
 
 
 def main():
-    accuracy(load_params_path='test-lr-05-new.pkl')
+    accuracy(load_params_path='LearningRateTests/test-lr-05-new.pkl')
 
 if __name__== "__main__":
   main()
