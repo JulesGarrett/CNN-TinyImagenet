@@ -384,6 +384,8 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     timeX2D = []
     costY2D = []
 
+    outputCostTime = open("cost_time.txt", "w+")
+    
     for epoch in range(num_epochs):
         np.random.shuffle(train_data)
         batches = [train_data[k:k + batch_size] for k in range(0, train_data.shape[0], batch_size)]
@@ -398,39 +400,35 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
             end = timer()
             timeX.append(end - start)
             costY.append(cost[-1])
+            outputCostTime.write(str(timeX[-1]) + "," + str(costY[-1]) + "\n")
+            # outputCostTime.write(costY[-1])
             t.set_description("Cost: %.2f" % (cost[-1]))
 
         timeX2D.append(timeX)
         costY2D.append(costY)
 
+    outputCostTime.close()
 
     with open(save_path, 'wb') as file:
         pickle.dump(params, file)
 
-    outputCostTime = open("cost_time.txt", "w+")
 
-    for i in range(0, num_epochs):
-        x = timeX2D[i]
-        outputCostTime.write("Time:")
-        for t in x:
-            outputCostTime.write(t)
 
-        outputCostTime.write("Cost:")
-        y = costY2D[i]
-        for c in y:
-            outputCostTime.write(c)
-
-        # Plot
-        plt.scatter(x, y)
-        plt.plot(x, y)
-        plt.title('Scatter plot')
-        plt.xlabel('Time')
-        plt.ylabel('Cost')
-        plt.show()
+    # for i in range(0, num_epochs):
+    #     x = timeX2D[i]
+    #     y = costY2D[i]
+    #
+    #     # Plot
+    #     plt.scatter(x, y)
+    #     plt.plot(x, y)
+    #     plt.title('Scatter plot')
+    #     plt.xlabel('Time')
+    #     plt.ylabel('Cost')
+    #     plt.show()
 
     return cost
 
-cost = train()
+cost = train(lr=0.5, save_path="test-lr-05-new.pkl")
 
 
 
