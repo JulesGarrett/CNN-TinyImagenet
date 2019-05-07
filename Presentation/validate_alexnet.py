@@ -6,7 +6,15 @@ import classify as cls
 
 import cv2
 #from alexnet import alexnet
-classList=[]
+classList=['bullfrog', 'Rana catesbeiana','Egyptian cat',
+'basketball',
+'plunger',' plumbers helper',
+'reel'
+'rocking chair, rocker',
+'volleyball',
+'lemon',
+'espresso'
+'cliff, drop, drop-off']
 
 
 images = []
@@ -20,8 +28,10 @@ scale = min(scale_width, scale_height)
 window_width = int(dogimg.shape[1] * scale)
 window_height = int(dogimg.shape[0] * scale)
 
+#uncomment below lines to show the image
 cv2.namedWindow('dst_rt', cv2.WINDOW_NORMAL)
 cv2.resizeWindow('dst_rt', window_width, window_height)
+
 
 cv2.imshow('dst_rt', dogimg)
 cv2.waitKey(0)
@@ -61,21 +71,20 @@ prob = cls.classify(inputimg,[],[], 1, 2, 2)
 #
 #
 ##Bar Graph
-x = [u'Dog', u'Cat', u'Apple', u'Bird', u'Chair', u'Lion', u'Shark', u'Table',u'Map']
-y = prob.tolist()
-y.sort(reverse=True)
+label = classList
+prob= prob.tolist()
 
-fig, ax = plt.subplots()
-width = 0.75 # the width of the bars
-ind = np.arange(len(y))  # the x locations for the groups
-ax.barh(ind, y, width, color="blue")
-ax.set_yticks(ind+width/2)
-ax.set_yticklabels(x, minor=False)
-plt.title('Image')
-plt.xlabel('x')
-plt.ylabel('y')
 
-for i, v in enumerate(y):
-    plt.text(v, i, " "+str(v), color='black', va='center', fontweight='bold')
-
+prob=[item[0] for item in prob]
+plt.barh(label, prob)
+plt.xlabel('Probability', fontsize=5)
+plt.ylabel('Class', fontsize=5)
+plt.xticks(label, prob, fontsize=2, rotation=30)
+plt.title('Classification Result')
 plt.show()
+
+
+
+
+
+
