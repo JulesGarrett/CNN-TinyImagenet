@@ -385,7 +385,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
     costY2D = []
 
     outputCostTime = open("cost_time.txt", "w+")
-    
+
     for epoch in range(num_epochs):
         np.random.shuffle(train_data)
         batches = [train_data[k:k + batch_size] for k in range(0, train_data.shape[0], batch_size)]
@@ -428,7 +428,7 @@ def train(num_classes = 10, lr = 0.01, beta1 = 0.95, beta2 = 0.99, img_dimen = 6
 
     return cost
 
-cost = train(lr=0.5, save_path="test-lr-05-new.pkl")
+cost = train(lr=0.01, save_path="test1.pkl")
 
 
 
