@@ -8,8 +8,8 @@ from matplotlib import pyplot as plt
     2. channel first or last?
     '''
 IMAGE_SIZE = 64
-CROP_SIZE = 58
-DA_FACTOR = 2
+CROP_SIZE = 50
+DA_FACTOR = 8
 '''
     @input: any image with size equal to or larger than 256,
     @return: a list of 2^4 images of the size 224x224
@@ -29,13 +29,13 @@ def crop_image(img):
     imgs = []
     diff = IMAGE_SIZE - CROP_SIZE
     imgs.append(img[0:CROP_SIZE,0:CROP_SIZE])
-#    imgs.append(img[1:CROP_SIZE+1,0:CROP_SIZE ])
-#    imgs.append(img[diff:IMAGE_SIZE,0:CROP_SIZE])
-#    imgs.append(img[diff-1:IMAGE_SIZE-1,0:CROP_SIZE])
-#    imgs.append(img[0:CROP_SIZE,diff-1:IMAGE_SIZE-1])
-#    imgs.append(img[0:CROP_SIZE,diff:IMAGE_SIZE])
-#    imgs.append(img[diff:IMAGE_SIZE,diff:IMAGE_SIZE])
-#    imgs.append(img[diff:IMAGE_SIZE,diff-1:IMAGE_SIZE-1])
+    imgs.append(img[1:CROP_SIZE+1,0:CROP_SIZE ])
+    imgs.append(img[diff:IMAGE_SIZE,0:CROP_SIZE])
+    imgs.append(img[diff-1:IMAGE_SIZE-1,0:CROP_SIZE])
+#     imgs.append(img[0:CROP_SIZE,diff-1:IMAGE_SIZE-1])
+#     imgs.append(img[0:CROP_SIZE,diff:IMAGE_SIZE])
+#     imgs.append(img[diff:IMAGE_SIZE,diff:IMAGE_SIZE])
+#     imgs.append(img[diff:IMAGE_SIZE,diff-1:IMAGE_SIZE-1])
     #    for i in imgs:
     #        plt.imshow(i)
     #        plt.show()
@@ -69,10 +69,7 @@ def data_aug(src):
         temp = np.array(temp)
 #        print('temp shape',temp.shape)
         imgs2.append(temp)
-#    del_indices = range(DA_FACTOR)
-##    print('del indices',del_indices)
-#    imgs2 = np.delete(imgs2, del_indices, 0)
-#    print('newx shape',imgs2.shape)
+
     imgs2 = np.array(imgs2)
 #    print('imgs2 shape',imgs2.shape)
     return imgs2
